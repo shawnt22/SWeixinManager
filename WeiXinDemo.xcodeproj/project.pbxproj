@@ -17,6 +17,7 @@
 		9C19DBEA165396A7009F80F3 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C19DBE9165396A7009F80F3 /* Default@2x.png */; };
 		9C19DBEC165396A7009F80F3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C19DBEB165396A7009F80F3 /* Default-568h@2x.png */; };
 		9C19DBF6165396CC009F80F3 /* libWeChatSDK_armv7_armv7s.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C19DBF3165396CC009F80F3 /* libWeChatSDK_armv7_armv7s.a */; };
+		9C19DC0016539917009F80F3 /* SWeiXinManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C19DBFF16539917009F80F3 /* SWeiXinManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,8 @@
 		9C19DBF3165396CC009F80F3 /* libWeChatSDK_armv7_armv7s.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK_armv7_armv7s.a; sourceTree = "<group>"; };
 		9C19DBF4165396CC009F80F3 /* WXApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApi.h; sourceTree = "<group>"; };
 		9C19DBF5165396CC009F80F3 /* WXApiObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApiObject.h; sourceTree = "<group>"; };
+		9C19DBFE16539917009F80F3 /* SWeiXinManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWeiXinManager.h; sourceTree = "<group>"; };
+		9C19DBFF16539917009F80F3 /* SWeiXinManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWeiXinManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,9 +87,11 @@
 		9C19DBDB165396A7009F80F3 /* WeiXinDemo */ = {
 			isa = PBXGroup;
 			children = (
+				9C19DBDC165396A7009F80F3 /* Supporting Files */,
 				9C19DBE4165396A7009F80F3 /* AppDelegate.h */,
 				9C19DBE5165396A7009F80F3 /* AppDelegate.m */,
-				9C19DBDC165396A7009F80F3 /* Supporting Files */,
+				9C19DBFE16539917009F80F3 /* SWeiXinManager.h */,
+				9C19DBFF16539917009F80F3 /* SWeiXinManager.m */,
 			);
 			path = WeiXinDemo;
 			sourceTree = "<group>";
@@ -183,6 +188,7 @@
 			files = (
 				9C19DBE2165396A7009F80F3 /* main.m in Sources */,
 				9C19DBE6165396A7009F80F3 /* AppDelegate.m in Sources */,
+				9C19DC0016539917009F80F3 /* SWeiXinManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

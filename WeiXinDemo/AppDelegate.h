@@ -7,16 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "WXApi.h"
+#import "SWeiXinManager.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, WXApiDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-
-@end
-
-@interface AppDelegate (Util)
-
-+ (NSString *)getWeixinAppID;
 
 @end

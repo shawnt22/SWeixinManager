@@ -18,7 +18,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [WXApi registerApp:[AppDelegate getWeixinAppID]];
+    NSLog(@"register weixin : %d", [[SWeiXinManager shareWeiXinManager] registerWXApp]);
     
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
@@ -29,18 +29,11 @@
 
 #pragma mark weixin delegate
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    return  [WXApi handleOpenURL:url delegate:self];
+    return  [[SWeiXinManager shareWeiXinManager] handleOpenURL:url];
 }
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    return [WXApi handleOpenURL:url delegate:self];
+    return [[SWeiXinManager shareWeiXinManager] handleOpenURL:url];
 }
--(void) onReq:(BaseReq*)req {
-    
-}
--(void) onResp:(BaseResp*)resp {
-    
-}
-
 
 
 
@@ -73,21 +66,4 @@
 }
 
 @end
-
-
-@implementation AppDelegate (Util)
-
-+ (NSString *)getWeixinAppID {
-    NSString *result = nil;
-    NSArray *_urlSchemes = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleURLTypes"];
-    for (id _scheme in _urlSchemes) {
-        if ([[_scheme objectForKey:@"CFBundleURLName"] isEqualToString:@"WeiXin"]) {
-            result = [[_scheme objectForKey:@"CFBundleURLSchemes"] lastObject];
-        }
-    }
-    return result;
-}
-
-@end
-
 
