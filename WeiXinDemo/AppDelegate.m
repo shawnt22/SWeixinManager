@@ -18,6 +18,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [WXApi registerApp:[AppDelegate getWeixinAppID]];
+    
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
@@ -25,6 +27,24 @@
     return YES;
 }
 
+#pragma mark weixin delegate
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    return  [WXApi handleOpenURL:url delegate:self];
+}
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    return [WXApi handleOpenURL:url delegate:self];
+}
+-(void) onReq:(BaseReq*)req {
+    
+}
+-(void) onResp:(BaseResp*)resp {
+    
+}
+
+
+
+
+#pragma mark app delegate
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -53,3 +73,21 @@
 }
 
 @end
+
+
+@implementation AppDelegate (Util)
+
++ (NSString *)getWeixinAppID {
+    NSString *result = nil;
+    NSArray *_urlSchemes = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleURLTypes"];
+    for (id _scheme in _urlSchemes) {
+        if ([[_scheme objectForKey:@"CFBundleURLName"] isEqualToString:@"WeiXin"]) {
+            result = [[_scheme objectForKey:@"CFBundleURLSchemes"] lastObject];
+        }
+    }
+    return result;
+}
+
+@end
+
+

@@ -16,6 +16,7 @@
 		9C19DBE8165396A7009F80F3 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C19DBE7165396A7009F80F3 /* Default.png */; };
 		9C19DBEA165396A7009F80F3 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C19DBE9165396A7009F80F3 /* Default@2x.png */; };
 		9C19DBEC165396A7009F80F3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C19DBEB165396A7009F80F3 /* Default-568h@2x.png */; };
+		9C19DBF6165396CC009F80F3 /* libWeChatSDK_armv7_armv7s.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C19DBF3165396CC009F80F3 /* libWeChatSDK_armv7_armv7s.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,9 @@
 		9C19DBE7165396A7009F80F3 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		9C19DBE9165396A7009F80F3 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		9C19DBEB165396A7009F80F3 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		9C19DBF3165396CC009F80F3 /* libWeChatSDK_armv7_armv7s.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK_armv7_armv7s.a; sourceTree = "<group>"; };
+		9C19DBF4165396CC009F80F3 /* WXApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApi.h; sourceTree = "<group>"; };
+		9C19DBF5165396CC009F80F3 /* WXApiObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApiObject.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +46,7 @@
 				9C19DBD6165396A7009F80F3 /* UIKit.framework in Frameworks */,
 				9C19DBD8165396A7009F80F3 /* Foundation.framework in Frameworks */,
 				9C19DBDA165396A7009F80F3 /* CoreGraphics.framework in Frameworks */,
+				9C19DBF6165396CC009F80F3 /* libWeChatSDK_armv7_armv7s.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,6 +73,7 @@
 		9C19DBD4165396A7009F80F3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9C19DBF2165396CC009F80F3 /* WeiXinFramwork */,
 				9C19DBD5165396A7009F80F3 /* UIKit.framework */,
 				9C19DBD7165396A7009F80F3 /* Foundation.framework */,
 				9C19DBD9165396A7009F80F3 /* CoreGraphics.framework */,
@@ -97,6 +103,17 @@
 				9C19DBEB165396A7009F80F3 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		9C19DBF2165396CC009F80F3 /* WeiXinFramwork */ = {
+			isa = PBXGroup;
+			children = (
+				9C19DBF3165396CC009F80F3 /* libWeChatSDK_armv7_armv7s.a */,
+				9C19DBF4165396CC009F80F3 /* WXApi.h */,
+				9C19DBF5165396CC009F80F3 /* WXApiObject.h */,
+			);
+			name = WeiXinFramwork;
+			path = WeiXinDemo/WeiXinFramwork;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -205,6 +222,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				LIBRARY_SEARCH_PATHS = "\"WeiXinDemo/WeiXinFramwork/\"";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -224,6 +242,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				LIBRARY_SEARCH_PATHS = "\"WeiXinDemo/WeiXinFramwork/\"";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -236,6 +255,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "WeiXinDemo/WeiXinDemo-Prefix.pch";
 				INFOPLIST_FILE = "WeiXinDemo/WeiXinDemo-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/WeiXinDemo/WeiXinFramwork\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -247,6 +270,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "WeiXinDemo/WeiXinDemo-Prefix.pch";
 				INFOPLIST_FILE = "WeiXinDemo/WeiXinDemo-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/WeiXinDemo/WeiXinFramwork\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
