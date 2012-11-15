@@ -37,9 +37,6 @@
 
 #pragma mark - Response
 @implementation BaseResp (Addition)
-- (int)serrorCode {
-    return self.errCode;
-}
 - (SWXResponseType)stype {
     return SWXResponseBase;
 }

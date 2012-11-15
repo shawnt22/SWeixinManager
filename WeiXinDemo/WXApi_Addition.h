@@ -44,7 +44,6 @@ typedef enum {
 }SWXResponseType;
 
 @interface BaseResp (Addition)
-- (int)serrorCode;
 - (SWXResponseType)stype;
 @end
 @interface SendMessageToWXResp (Addition)

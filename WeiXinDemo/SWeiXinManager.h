@@ -10,13 +10,13 @@
 #import "WXApi.h"
 #import "WXApi_Addition.h"
 
-#define test_video_url_sina     @"http://video.sina.com.cn/v/b/90027333-2214257545.html"
-#define test_video_url_56       @"http://www.56.com/w55/play_album-aid-9935737_vid-Njk1NjQyMTc.html"
-#define test_video_url_ifeng    @"http://v.ifeng.com/vblog/dv/201211/b2c37bdc-d1d0-4511-81ba-61082f3111af.shtml"
-#define test_video_url_youku    @"http://v.youku.com/v_show/id_XNDc0OTgyMTY4.html"
-
 typedef enum {
-    WeiXinManagerErrorDefault,
+    WeiXinManagerErrorCommon = WXErrCodeCommon,
+    WeiXinManagerErrorUserCancel = WXErrCodeUserCancel, //  用户不做操作直接从微信返回app时触发，可忽略
+    WeiXinManagerErrorSendFail = WXErrCodeSentFail,
+    WeiXinManagerErrorAuthDeny = WXErrCodeAuthDeny,
+    WeiXinManagerErrorUnsupport = WXErrCodeUnsupport,
+    WeiXinManagerSuccess = WXSuccess,
     WeiXinManagerErrorRegister, //  注册AppID失败
 }WeiXinManagerErrorCode;
 
@@ -31,6 +31,11 @@ typedef enum {
 
 @interface SWeiXinManager : NSObject <WXApiDelegate>
 + (SWeiXinManager *)shareWeiXinManager;
+@end
+
+#pragma mark - Others
+@interface SWeiXinManager (Others)
+- (void)author;
 @end
 
 #pragma mark - Share

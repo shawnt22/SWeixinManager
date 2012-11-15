@@ -46,9 +46,19 @@
     [_pengyouquan setTitle:@"分享到朋友圈" forState:UIControlStateNormal];
     [self.window addSubview:_pengyouquan];
     
+    UIButton *_login = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    _login.frame = CGRectMake(_weixin.frame.origin.x, _weixin.frame.origin.y+_weixin.frame.size.height+40, 120, 44);
+    [_login addTarget:self action:@selector(loginWithWeixinAction:) forControlEvents:UIControlEventTouchUpInside];
+    [_login setTitle:@"通过微信登陆" forState:UIControlStateNormal];
+    [self.window addSubview:_login];
+    
     return YES;
 }
 
+- (void)loginWithWeixinAction:(id)sender {
+    [[SWeiXinManager shareWeiXinManager] addObserver:self];
+    [[SWeiXinManager shareWeiXinManager] author];
+}
 - (void)shareToWeixinAction:(id)sender {
     [[SWeiXinManager shareWeiXinManager] addObserver:self];
     [[SWeiXinManager shareWeiXinManager] shareVideoToWeixinWithURLPath:test_video_url_sina Title:@"分享到微信 视频的标题 title" Description:@"分享到微信 内容 description"];

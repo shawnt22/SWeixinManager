@@ -54,10 +54,10 @@ static SWeiXinManager *wxManager = nil;
 
 #pragma mark error
 + (BOOL)hasErrorWithWXResponse:(BaseResp *)response {
-    return response.errCode == 0 ? NO : YES;
+    return response.errCode == WeiXinManagerSuccess ? NO : YES;
 }
 + (NSError *)errorWithWXResponse:(BaseResp *)response {
-    return [SWeiXinManager errorWithWeiXinManagerErrorCode:[response serrorCode]];
+    return [SWeiXinManager errorWithWeiXinManagerErrorCode:response.errCode];
 }
 + (NSError *)errorWithWeiXinManagerErrorCode:(WeiXinManagerErrorCode)code {
     NSString *description = @"";
@@ -65,11 +65,37 @@ static SWeiXinManager *wxManager = nil;
         case WeiXinManagerErrorRegister:
             description = @"无法连接到微信";
             break;
+        case WeiXinManagerErrorUserCancel:
+            description = @"取消了微信相关的操作";
+            break;
+        case WeiXinManagerErrorSendFail:
+            description = @"分享到微信失败了";
+            break;
+        case WeiXinManagerErrorAuthDeny:
+            description = @"微信认证失败了";
+            break;
+        case WeiXinManagerErrorUnsupport:
+            description = @"微信不支持";
+            break;
         default:
             description = @"分享到微信失败了";
             break;
     }
     return [NSError errorWithDomain:@"SWXManagerDomain" code:code userInfo:[NSDictionary dictionaryWithObjectsAndKeys:description, NSLocalizedDescriptionKey, nil]];
+}
+
+@end
+
+#pragma mark - Others
+@implementation SWeiXinManager (Others)
+
+- (void)author {
+    SendAuthReq *_request = [[SendAuthReq alloc] init];
+    _request.scope = @"post_timeline";
+    _request.state = @"xxx";
+    
+    [WXApi sendReq:_request];
+    [_request release];
 }
 
 @end
@@ -161,7 +187,7 @@ static SWeiXinManager *wxManager = nil;
     return result;
 }
 + (BOOL)isEmptyString:(NSString *)string {
-    return string == nil || [string length] == 0 ? YES : NO;
+    return string == nil || ![string isKindOfClass:[NSString class]] || [string length] == 0 ? YES : NO;
 }
 
 @end
