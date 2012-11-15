@@ -13,6 +13,9 @@ static SWeiXinManager *wxManager = nil;
 
 @interface SWeiXinManager ()
 @property (nonatomic, retain) NSMutableSet *observers;
++ (BOOL)hasErrorWithWXResponse:(BaseResp *)response;
+- (NSError *)errorWithWXResponse:(BaseResp *)response;
+- (NSError *)errorWithWeiXinManagerErrorCode:(WeiXinManagerErrorCode)code;
 @end
 
 @implementation SWeiXinManager
@@ -38,19 +41,64 @@ static SWeiXinManager *wxManager = nil;
 }
 
 #pragma mark wx delegate
--(void) onReq:(BaseReq*)req {}
--(void) onResp:(BaseResp*)resp {}
+-(void) onReq:(BaseReq*)req {
+    
+}
+-(void) onResp:(BaseResp*)resp {
+    if ([SWeiXinManager hasErrorWithWXResponse:resp]) {
+        [self notifyWeixinManager:self failResponse:[resp stype] Error:[self errorWithWXResponse:resp]];
+    } else {
+        [self notifyWeixinManager:self successResponse:[resp stype]];
+    }
+}
+
+#pragma mark error
++ (BOOL)hasErrorWithWXResponse:(BaseResp *)response {
+    return response.errCode == 0 ? NO : YES;
+}
+- (NSError *)errorWithWXResponse:(BaseResp *)response {
+    return [self errorWithWeiXinManagerErrorCode:[response serrorCode]];
+}
+- (NSError *)errorWithWeiXinManagerErrorCode:(WeiXinManagerErrorCode)code {
+    NSString *description = @"";
+    switch (code) {
+        default:
+            description = @"分享到微信失败了";
+            break;
+    }
+    return [NSError errorWithDomain:@"SWXManagerDomain" code:code userInfo:[NSDictionary dictionaryWithObjectsAndKeys:description, NSLocalizedDescriptionKey, nil]];
+}
 
 @end
 
-#pragma mark - WXApiMap
-@implementation SWeiXinManager (WXApiMap)
+#pragma mark - Share
+@implementation SWeiXinManager (Share)
 
-- (BOOL)registerWXApp {
-    return [WXApi registerApp:[SWeiXinManager getWeixinAppID]];
+- (void)shareVideoToWeixinWithURLPath:(NSString *)urlPath Title:(NSString *)title Description:(NSString *)description {
+    [self shareVideo:urlPath Title:title Description:description toWXScene:WXSceneSession];
 }
-- (BOOL)handleOpenURL:(NSURL *)url {
-    return [WXApi handleOpenURL:url delegate:self];
+- (void)shareVideoToPengyouquanWithURLPath:(NSString *)urlPath Title:(NSString *)title Description:(NSString *)description {
+    [self shareVideo:urlPath Title:title Description:description toWXScene:WXSceneTimeline];
+}
+- (void)shareVideo:(NSString *)videoURLPath Title:(NSString *)title Description:(NSString *)description toWXScene:(int)scene {
+    WXMediaMessage *_message = [WXMediaMessage message];
+    if (![SWeiXinManager isEmptyString:title]) {
+        _message.title = title;
+    }
+    if (![SWeiXinManager isEmptyString:description]) {
+        _message.description = description;
+    }
+    WXVideoObject *_video = [WXVideoObject object];
+    _video.videoUrl = videoURLPath;
+    _message.mediaObject = _video;
+    
+    SendMessageToWXReq *_request = [[SendMessageToWXReq alloc] init];
+    _request.bText = NO;
+    _request.scene = scene;
+    _request.message = _message;
+    
+    [WXApi sendReq:_request];
+    [_request release];
 }
 
 @end
@@ -73,7 +121,26 @@ static SWeiXinManager *wxManager = nil;
 #pragma mark - Notify
 @implementation SWeiXinManager (Notify)
 
-
+- (void)notifyWeixinManager:(SWeiXinManager *)manager successResponse:(SWXResponseType)type {
+    for (NSInteger index = 0; index < [[self.observers allObjects] count]; index++) {
+        id<SWeiXinManagerDelegate> observer = [[self.observers allObjects] objectAtIndex:index];
+        if ([observer respondsToSelector:@selector(weixinManager:successResponse:)]) {
+            [observer weixinManager:manager successResponse:type];
+            [self removeObserver:observer];
+            index--;
+        }
+    }
+}
+- (void)notifyWeixinManager:(SWeiXinManager *)manager failResponse:(SWXResponseType)type Error:(NSError *)error {
+    for (NSInteger index = 0; index < [[self.observers allObjects] count]; index++) {
+        id<SWeiXinManagerDelegate> observer = [[self.observers allObjects] objectAtIndex:index];
+        if ([observer respondsToSelector:@selector(weixinManager:failResponse:Error:)]) {
+            [observer weixinManager:manager failResponse:type Error:error];
+            [self removeObserver:observer];
+            index--;
+        }
+    }
+}
 
 @end
 
@@ -89,6 +156,9 @@ static SWeiXinManager *wxManager = nil;
         }
     }
     return result;
+}
++ (BOOL)isEmptyString:(NSString *)string {
+    return string == nil || [string length] == 0 ? YES : NO;
 }
 
 @end

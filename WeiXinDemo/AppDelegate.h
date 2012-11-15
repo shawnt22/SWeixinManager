@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "SWeiXinManager.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, SWeiXinManagerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
