@@ -14,8 +14,8 @@ static SWeiXinManager *wxManager = nil;
 @interface SWeiXinManager ()
 @property (nonatomic, retain) NSMutableSet *observers;
 + (BOOL)hasErrorWithWXResponse:(BaseResp *)response;
-- (NSError *)errorWithWXResponse:(BaseResp *)response;
-- (NSError *)errorWithWeiXinManagerErrorCode:(WeiXinManagerErrorCode)code;
++ (NSError *)errorWithWXResponse:(BaseResp *)response;
++ (NSError *)errorWithWeiXinManagerErrorCode:(WeiXinManagerErrorCode)code;
 @end
 
 @implementation SWeiXinManager
@@ -46,9 +46,9 @@ static SWeiXinManager *wxManager = nil;
 }
 -(void) onResp:(BaseResp*)resp {
     if ([SWeiXinManager hasErrorWithWXResponse:resp]) {
-        [self notifyWeixinManager:self failResponse:[resp stype] Error:[self errorWithWXResponse:resp]];
+        [self notifyWeixinManager:self failResponse:[resp stype] Error:[SWeiXinManager errorWithWXResponse:resp]];
     } else {
-        [self notifyWeixinManager:self successResponse:[resp stype]];
+        [self notifyWeixinManager:self successResponse:[resp stype] UserInfo:resp];
     }
 }
 
@@ -56,12 +56,15 @@ static SWeiXinManager *wxManager = nil;
 + (BOOL)hasErrorWithWXResponse:(BaseResp *)response {
     return response.errCode == 0 ? NO : YES;
 }
-- (NSError *)errorWithWXResponse:(BaseResp *)response {
-    return [self errorWithWeiXinManagerErrorCode:[response serrorCode]];
++ (NSError *)errorWithWXResponse:(BaseResp *)response {
+    return [SWeiXinManager errorWithWeiXinManagerErrorCode:[response serrorCode]];
 }
-- (NSError *)errorWithWeiXinManagerErrorCode:(WeiXinManagerErrorCode)code {
++ (NSError *)errorWithWeiXinManagerErrorCode:(WeiXinManagerErrorCode)code {
     NSString *description = @"";
     switch (code) {
+        case WeiXinManagerErrorRegister:
+            description = @"无法连接到微信";
+            break;
         default:
             description = @"分享到微信失败了";
             break;
@@ -121,11 +124,11 @@ static SWeiXinManager *wxManager = nil;
 #pragma mark - Notify
 @implementation SWeiXinManager (Notify)
 
-- (void)notifyWeixinManager:(SWeiXinManager *)manager successResponse:(SWXResponseType)type {
+- (void)notifyWeixinManager:(SWeiXinManager *)manager successResponse:(SWXResponseType)type UserInfo:(id)info {
     for (NSInteger index = 0; index < [[self.observers allObjects] count]; index++) {
         id<SWeiXinManagerDelegate> observer = [[self.observers allObjects] objectAtIndex:index];
-        if ([observer respondsToSelector:@selector(weixinManager:successResponse:)]) {
-            [observer weixinManager:manager successResponse:type];
+        if ([observer respondsToSelector:@selector(weixinManager:successResponse:UserInfo:)]) {
+            [observer weixinManager:manager successResponse:type UserInfo:info];
             [self removeObserver:observer];
             index--;
         }

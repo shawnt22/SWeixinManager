@@ -59,7 +59,7 @@
 }
 
 #pragma mark weixin delegate
-- (void)weixinManager:(SWeiXinManager *)manager successResponse:(SWXResponseType)type {
+- (void)weixinManager:(SWeiXinManager *)manager successResponse:(SWXResponseType)type UserInfo:(id)info {
     [self alertWithTitle:@"成功" Message:[NSString stringWithFormat:@"response 类型 : %d", type]];
 }
 - (void)weixinManager:(SWeiXinManager *)manager failResponse:(SWXResponseType)type Error:(NSError *)error {

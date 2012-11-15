@@ -17,6 +17,7 @@
 
 typedef enum {
     WeiXinManagerErrorDefault,
+    WeiXinManagerErrorRegister, //  注册AppID失败
 }WeiXinManagerErrorCode;
 
 
@@ -24,7 +25,7 @@ typedef enum {
 @class SWeiXinManager;
 @protocol SWeiXinManagerDelegate <NSObject>
 @optional
-- (void)weixinManager:(SWeiXinManager *)manager successResponse:(SWXResponseType)type;
+- (void)weixinManager:(SWeiXinManager *)manager successResponse:(SWXResponseType)type UserInfo:(id)info;
 - (void)weixinManager:(SWeiXinManager *)manager failResponse:(SWXResponseType)type Error:(NSError *)error;
 @end
 
@@ -48,7 +49,7 @@ typedef enum {
 
 #pragma mark - Notify
 @interface SWeiXinManager (Notify)
-- (void)notifyWeixinManager:(SWeiXinManager *)manager successResponse:(SWXResponseType)type;
+- (void)notifyWeixinManager:(SWeiXinManager *)manager successResponse:(SWXResponseType)type UserInfo:(id)info;
 - (void)notifyWeixinManager:(SWeiXinManager *)manager failResponse:(SWXResponseType)type Error:(NSError *)error;
 @end
 
