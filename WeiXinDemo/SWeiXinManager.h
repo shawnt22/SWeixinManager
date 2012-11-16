@@ -29,6 +29,11 @@ typedef enum {
 - (void)weixinManager:(SWeiXinManager *)manager failResponse:(SWXResponseType)type Error:(NSError *)error;
 @end
 
+@protocol SWXManagerRequestDelegate <NSObject>
+@optional
+- (void)weixinManager:(SWeiXinManager *)manager onRequestFromWX:(SWXRequestType)type UserInfo:(id)info;
+@end
+
 @interface SWeiXinManager : NSObject <WXApiDelegate>
 + (SWeiXinManager *)shareWeiXinManager;
 @end
@@ -50,12 +55,17 @@ typedef enum {
 - (void)addResponseObserver:(id<SWXManagerResponseDelegate>)observer;
 - (void)removeResponseObserver:(id<SWXManagerResponseDelegate>)observer;
 - (void)removeAllResponseObservers;
+
+- (void)addRequestObserver:(id<SWXManagerRequestDelegate>)observer;
+- (void)removeRequestObserver:(id<SWXManagerRequestDelegate>)observer;
+- (void)removeAllRequestObservers;
 @end
 
 #pragma mark - Notify
 @interface SWeiXinManager (Notify)
 - (void)notifyWeixinManager:(SWeiXinManager *)manager successResponse:(SWXResponseType)type UserInfo:(id)info;
 - (void)notifyWeixinManager:(SWeiXinManager *)manager failResponse:(SWXResponseType)type Error:(NSError *)error;
+- (void)notifyWeixinManager:(SWeiXinManager *)manager onRequestFromWX:(SWXRequestType)type UserInfo:(id)info;
 @end
 
 #pragma mark - Util

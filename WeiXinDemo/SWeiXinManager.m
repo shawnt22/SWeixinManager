@@ -13,13 +13,14 @@ static SWeiXinManager *wxManager = nil;
 
 @interface SWeiXinManager ()
 @property (nonatomic, retain) NSMutableSet *responseObservers;
+@property (nonatomic, retain) NSMutableSet *requestObservers;
 + (BOOL)hasErrorWithWXResponse:(BaseResp *)response;
 + (NSError *)errorWithWXResponse:(BaseResp *)response;
 + (NSError *)errorWithWeiXinManagerErrorCode:(WeiXinManagerErrorCode)code;
 @end
 
 @implementation SWeiXinManager
-@synthesize responseObservers;
+@synthesize responseObservers, requestObservers;
 
 #pragma mark init & dealloc
 + (SWeiXinManager *)shareWeiXinManager {
@@ -32,17 +33,19 @@ static SWeiXinManager *wxManager = nil;
     self = [super init];
     if (self) {
         self.responseObservers = [NSMutableSet set];
+        self.requestObservers = [NSMutableSet set];
     }
     return self;
 }
 - (void)dealloc {
     self.responseObservers = nil;
+    self.requestObservers = nil;
     [super dealloc];
 }
 
 #pragma mark wx delegate
 -(void) onReq:(BaseReq*)req {
-    
+    [self notifyWeixinManager:self onRequestFromWX:[req stype] UserInfo:req];
 }
 -(void) onResp:(BaseResp*)resp {
     if ([SWeiXinManager hasErrorWithWXResponse:resp]) {
@@ -133,16 +136,53 @@ static SWeiXinManager *wxManager = nil;
 @end
 
 #pragma mark - Observer
+typedef enum {
+    WXManagerObserverRequest,
+    WXManagerObserverResponse,
+}WXManagerObserverType;
+
+@interface SWeiXinManager (Observer_Privated)
+- (void)addObserver:(id)observer Type:(WXManagerObserverType)type;
+- (void)removeObserver:(id)observer Type:(WXManagerObserverType)type;
+- (void)removeAllObserversWithType:(WXManagerObserverType)type;
+- (NSMutableSet *)observersWithType:(WXManagerObserverType)type;
+@end
+
+@implementation SWeiXinManager (Observer_Privated)
+- (NSMutableSet *)observersWithType:(WXManagerObserverType)type {
+    return type == WXManagerObserverRequest ? self.requestObservers : self.responseObservers;
+}
+- (void)addObserver:(id)observer Type:(WXManagerObserverType)type {
+    [[self observersWithType:type] addObject:observer];
+}
+- (void)removeObserver:(id)observer Type:(WXManagerObserverType)type {
+    [[self observersWithType:type] removeObject:observer];
+}
+- (void)removeAllObserversWithType:(WXManagerObserverType)type {
+    [[self observersWithType:type] removeAllObjects];
+}
+@end
+
 @implementation SWeiXinManager (Observer)
 
 - (void)addResponseObserver:(id<SWXManagerResponseDelegate>)observer {
-    [self.responseObservers addObject:observer];
+    [self addObserver:observer Type:WXManagerObserverResponse];
 }
 - (void)removeResponseObserver:(id<SWXManagerResponseDelegate>)observer {
-    [self.responseObservers removeObject:observer];
+    [self removeObserver:observer Type:WXManagerObserverResponse];
 }
 - (void)removeAllResponseObservers {
-    [self.responseObservers removeAllObjects];
+    [self removeAllObserversWithType:WXManagerObserverResponse];
+}
+
+- (void)addRequestObserver:(id<SWXManagerRequestDelegate>)observer {
+    [self addObserver:observer Type:WXManagerObserverRequest];
+}
+- (void)removeRequestObserver:(id<SWXManagerRequestDelegate>)observer {
+    [self removeObserver:observer Type:WXManagerObserverRequest];
+}
+- (void)removeAllRequestObservers {
+    [self removeAllObserversWithType:WXManagerObserverRequest];
 }
 
 @end
@@ -166,6 +206,16 @@ static SWeiXinManager *wxManager = nil;
         if ([observer respondsToSelector:@selector(weixinManager:failResponse:Error:)]) {
             [observer weixinManager:manager failResponse:type Error:error];
             [self removeResponseObserver:observer];
+            index--;
+        }
+    }
+}
+- (void)notifyWeixinManager:(SWeiXinManager *)manager onRequestFromWX:(SWXRequestType)type UserInfo:(id)info {
+    for (NSInteger index = 0; index < [[self.requestObservers allObjects] count]; index++) {
+        id<SWXManagerRequestDelegate> observer = [[self.requestObservers allObjects] objectAtIndex:index];
+        if ([observer respondsToSelector:@selector(weixinManager:onRequestFromWX:UserInfo:)]) {
+            [observer weixinManager:manager onRequestFromWX:type UserInfo:info];
+            [self removeRequestObserver:observer];
             index--;
         }
     }
