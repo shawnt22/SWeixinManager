@@ -23,7 +23,7 @@ typedef enum {
 
 #pragma mark - Base
 @class SWeiXinManager;
-@protocol SWeiXinManagerDelegate <NSObject>
+@protocol SWXManagerResponseDelegate <NSObject>
 @optional
 - (void)weixinManager:(SWeiXinManager *)manager successResponse:(SWXResponseType)type UserInfo:(id)info;
 - (void)weixinManager:(SWeiXinManager *)manager failResponse:(SWXResponseType)type Error:(NSError *)error;
@@ -47,9 +47,9 @@ typedef enum {
 
 #pragma mark - Observer
 @interface SWeiXinManager (Observer)
-- (void)addObserver:(id<SWeiXinManagerDelegate>)observer;
-- (void)removeObserver:(id<SWeiXinManagerDelegate>)observer;
-- (void)removeAllObservers;
+- (void)addResponseObserver:(id<SWXManagerResponseDelegate>)observer;
+- (void)removeResponseObserver:(id<SWXManagerResponseDelegate>)observer;
+- (void)removeAllResponseObservers;
 @end
 
 #pragma mark - Notify

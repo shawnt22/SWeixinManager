@@ -12,14 +12,14 @@
 static SWeiXinManager *wxManager = nil;
 
 @interface SWeiXinManager ()
-@property (nonatomic, retain) NSMutableSet *observers;
+@property (nonatomic, retain) NSMutableSet *responseObservers;
 + (BOOL)hasErrorWithWXResponse:(BaseResp *)response;
 + (NSError *)errorWithWXResponse:(BaseResp *)response;
 + (NSError *)errorWithWeiXinManagerErrorCode:(WeiXinManagerErrorCode)code;
 @end
 
 @implementation SWeiXinManager
-@synthesize observers;
+@synthesize responseObservers;
 
 #pragma mark init & dealloc
 + (SWeiXinManager *)shareWeiXinManager {
@@ -31,12 +31,12 @@ static SWeiXinManager *wxManager = nil;
 - (id)init {
     self = [super init];
     if (self) {
-        self.observers = [NSMutableSet set];
+        self.responseObservers = [NSMutableSet set];
     }
     return self;
 }
 - (void)dealloc {
-    self.observers = nil;
+    self.responseObservers = nil;
     [super dealloc];
 }
 
@@ -135,14 +135,14 @@ static SWeiXinManager *wxManager = nil;
 #pragma mark - Observer
 @implementation SWeiXinManager (Observer)
 
-- (void)addObserver:(id<SWeiXinManagerDelegate>)observer {
-    [self.observers addObject:observer];
+- (void)addResponseObserver:(id<SWXManagerResponseDelegate>)observer {
+    [self.responseObservers addObject:observer];
 }
-- (void)removeObserver:(id<SWeiXinManagerDelegate>)observer {
-    [self.observers removeObject:observer];
+- (void)removeResponseObserver:(id<SWXManagerResponseDelegate>)observer {
+    [self.responseObservers removeObject:observer];
 }
-- (void)removeAllObservers {
-    [self.observers removeAllObjects];
+- (void)removeAllResponseObservers {
+    [self.responseObservers removeAllObjects];
 }
 
 @end
@@ -151,21 +151,21 @@ static SWeiXinManager *wxManager = nil;
 @implementation SWeiXinManager (Notify)
 
 - (void)notifyWeixinManager:(SWeiXinManager *)manager successResponse:(SWXResponseType)type UserInfo:(id)info {
-    for (NSInteger index = 0; index < [[self.observers allObjects] count]; index++) {
-        id<SWeiXinManagerDelegate> observer = [[self.observers allObjects] objectAtIndex:index];
+    for (NSInteger index = 0; index < [[self.responseObservers allObjects] count]; index++) {
+        id<SWXManagerResponseDelegate> observer = [[self.responseObservers allObjects] objectAtIndex:index];
         if ([observer respondsToSelector:@selector(weixinManager:successResponse:UserInfo:)]) {
             [observer weixinManager:manager successResponse:type UserInfo:info];
-            [self removeObserver:observer];
+            [self removeResponseObserver:observer];
             index--;
         }
     }
 }
 - (void)notifyWeixinManager:(SWeiXinManager *)manager failResponse:(SWXResponseType)type Error:(NSError *)error {
-    for (NSInteger index = 0; index < [[self.observers allObjects] count]; index++) {
-        id<SWeiXinManagerDelegate> observer = [[self.observers allObjects] objectAtIndex:index];
+    for (NSInteger index = 0; index < [[self.responseObservers allObjects] count]; index++) {
+        id<SWXManagerResponseDelegate> observer = [[self.responseObservers allObjects] objectAtIndex:index];
         if ([observer respondsToSelector:@selector(weixinManager:failResponse:Error:)]) {
             [observer weixinManager:manager failResponse:type Error:error];
-            [self removeObserver:observer];
+            [self removeResponseObserver:observer];
             index--;
         }
     }

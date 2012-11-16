@@ -56,15 +56,15 @@
 }
 
 - (void)loginWithWeixinAction:(id)sender {
-    [[SWeiXinManager shareWeiXinManager] addObserver:self];
+    [[SWeiXinManager shareWeiXinManager] addResponseObserver:self];
     [[SWeiXinManager shareWeiXinManager] author];
 }
 - (void)shareToWeixinAction:(id)sender {
-    [[SWeiXinManager shareWeiXinManager] addObserver:self];
+    [[SWeiXinManager shareWeiXinManager] addResponseObserver:self];
     [[SWeiXinManager shareWeiXinManager] shareVideoToWeixinWithURLPath:test_video_url_sina Title:@"分享到微信 视频的标题 title" Description:@"分享到微信 内容 description"];
 }
 - (void)shareToPengyouquanAction:(id)sender {
-    [[SWeiXinManager shareWeiXinManager] addObserver:self];
+    [[SWeiXinManager shareWeiXinManager] addResponseObserver:self];
     [[SWeiXinManager shareWeiXinManager] shareVideoToPengyouquanWithURLPath:test_video_url_sina Title:@"分享到朋友圈 视频的标题 title" Description:@"分享到朋友圈 内容 description"];
 }
 
